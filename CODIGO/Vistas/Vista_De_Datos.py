@@ -42,9 +42,53 @@ def vista_vertical(panel, columnas, datos):
         return
 
     for fila in datos:
-        contenedor = tkinter.Frame(frame_datos, bg="#ccf5ff", bd=1, relief="solid")
+        contenedor = tkinter.Frame(frame_datos, bg="#d4f4dd", bd=1, relief="solid")
         contenedor.pack(padx=10, pady=5, fill="x")
 
         for i, valor in enumerate(fila):
-            etiqueta = tkinter.Label(contenedor, text=f"{columnas[i]}: {valor}", bg="#ccf5ff", anchor="w", font=("Arial", 10))
+            etiqueta = tkinter.Label(contenedor, text=f"{columnas[i]}: {valor}", bg="#d4f4dd", anchor="w", font=("Arial", 10))
             etiqueta.pack(fill="x", padx=10, pady=2)
+
+def vista_tabla(panel, columnas, datos):
+    canvas = tkinter.Canvas(panel, bg="white")
+    scrollbar = tkinter.Scrollbar(panel, orient="vertical", command=canvas.yview)
+    frame_contenedor = tkinter.Frame(canvas, bg="white")
+
+    frame_contenedor.bind(
+        "<Configure>",
+        lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
+    )
+
+    canvas.create_window((0, 0), window=frame_contenedor, anchor="nw")
+    canvas.configure(yscrollcommand=scrollbar.set)
+
+    canvas.pack(side="left", fill="both", expand=True)
+    scrollbar.pack(side="right", fill="y")
+
+    encabezado = tkinter.Frame(frame_contenedor, bg="white")
+    encabezado.pack(pady=10)
+
+    titulo_label = tkinter.Label(encabezado, text="BASE DE DATOS", bg="white", fg="black", font=("Arial", 16, "bold"))
+    titulo_label.pack()
+
+    if not datos:
+        label = tkinter.Label(frame_contenedor, text="No se encontraron datos.", fg="red", bg="white", font=("Arial", 12))
+        label.pack(pady=5)
+        return
+
+    # Encabezados de columnas
+    header_frame = tkinter.Frame(frame_contenedor, bg="#b3e5fc")
+    header_frame.pack(padx=10, fill="x")
+
+    for col in columnas:
+        etiqueta_col = tkinter.Label(header_frame, text=col, bg="#b3e5fc", font=("Arial", 10, "bold"), anchor="w")
+        etiqueta_col.pack(side="left", padx=10, pady=5)
+
+    # Filas de datos
+    for fila in datos:
+        fila_frame = tkinter.Frame(frame_contenedor, bg="#e1f5fe", bd=1, relief="solid")
+        fila_frame.pack(padx=10, pady=2, fill="x")
+
+        for valor in fila:
+            etiqueta = tkinter.Label(fila_frame, text=valor, bg="#e1f5fe", font=("Arial", 10), anchor="w")
+            etiqueta.pack(side="left", padx=10,pady=5)
